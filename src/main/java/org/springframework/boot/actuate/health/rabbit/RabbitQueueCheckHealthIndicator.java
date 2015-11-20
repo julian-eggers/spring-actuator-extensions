@@ -1,4 +1,4 @@
-package io.spring.boot.actuate.health;
+package org.springframework.boot.actuate.health.rabbit;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

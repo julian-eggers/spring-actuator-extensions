@@ -1,10 +1,12 @@
-package org.springframework.boot.actuate.health.rabbit;
+package com.itelg.spring.actuator;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
+
+import com.itelg.spring.actuator.QueueCheck;
 
 public class QueueCheckTest
 {

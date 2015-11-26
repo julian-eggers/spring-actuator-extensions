@@ -16,6 +16,6 @@ spring-actuator-extensions
 	<dependency>
 		<groupId>com.itelg.spring</groupId>
 		<artifactId>spring-actuator-extensions</artifactId>
-		<version>0.1.0-RELEASE</version>
+		<version>0.2.0.RELEASE</version>
 	</dependency>
 </dependencies>

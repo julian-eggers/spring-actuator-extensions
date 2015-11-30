@@ -6,16 +6,10 @@ spring-actuator-extensions
 
 #### Maven
 ```xml
-<repositories>
-	<repository>
-		<id>itelg</id>
-		<url>http://mvnrepo.itelg.com/release</url>
-	</repository>
-</repositories>
 <dependencies>
 	<dependency>
 		<groupId>com.itelg.spring</groupId>
 		<artifactId>spring-actuator-extensions</artifactId>
-		<version>0.2.0.RELEASE</version>
+		<version>0.2.2-RELEASE</version>
 	</dependency>
 </dependencies>

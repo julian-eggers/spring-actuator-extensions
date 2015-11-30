@@ -5,11 +5,11 @@
 	<name>spring-actuator-extensions</name>
 	<description>New HealthIndicators for Spring-Boot</description>
 	<url>https://github.com/julian-eggers/spring-actuator-extensions</url>
-	<version>0.2.1-RELEASE</version>
+	<version>0.2.2-RELEASE</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.7</java.version>
+		<java.version>1.8</java.version>
 		<powermock.version>1.6.2</powermock.version>
 	</properties>
 
@@ -153,22 +153,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<extensions>
-			<extension>
-				<groupId>org.springframework.build</groupId>
-				<artifactId>aws-maven</artifactId>
-				<version>5.0.0.RELEASE</version>
-			</extension>
-		</extensions>
 	</build>
-
-	<distributionManagement>
-		<repository>
-			<id>aws-release</id>
-			<name>AWS Release Repository</name>
-			<url>s3://mvnrepo.itelg.com/release</url>
-		</repository>
-	</distributionManagement>
 
 	<dependencies>
 		<dependency>

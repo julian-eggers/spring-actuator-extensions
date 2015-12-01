@@ -13,3 +13,16 @@ spring-actuator-extensions
 		<version>0.2.2-RELEASE</version>
 	</dependency>
 </dependencies>
+```
+
+#### Example
+```java
+@Bean
+public HealthIndicator queueCheckHealthIndicator()
+{
+	RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
+	healthIndicator.addQueueCheck(exampleQueue1, 10000, 1);
+	healthIndicator.addQueueCheck(exampleQueue2, 50000, 3);
+	return healthIndicator;
+}
+```

@@ -26,3 +26,30 @@ public HealthIndicator queueCheckHealthIndicator()
 	return healthIndicator;
 }
 ```
+
+#### Response (health.json)
+```json
+{
+	"status" : "DOWN",
+	"queueCheck" : 
+	{
+		"status" : "DOWN",
+		"com.examle.exampleQueue1" : 
+		{
+			"status" : "UP",
+			"currentMessageCount" : 214,
+			"maxMessageCount" : 10000,
+			"currentConsumerCount" : 5,
+			"minConsumerCount" : 1
+		},
+		"com.example.exampleQueue2" : 
+		{
+			"status" : "DOWN",
+			"currentMessageCount" : 67377,
+			"maxMessageCount" : 50000,
+			"currentConsumerCount" : 0,
+			"minConsumerCount" : 3
+		}
+	}
+  },
+```

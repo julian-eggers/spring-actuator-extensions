@@ -51,5 +51,5 @@ public HealthIndicator queueCheckHealthIndicator()
 			"minConsumerCount" : 3
 		}
 	}
-  },
+}
 ```

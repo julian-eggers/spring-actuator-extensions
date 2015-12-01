@@ -27,7 +27,7 @@ public HealthIndicator queueCheckHealthIndicator()
 }
 ```
 
-#### Response (health.json)
+#### Response ([health.json](http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html#production-ready-health))
 ```json
 {
 	"status" : "DOWN",

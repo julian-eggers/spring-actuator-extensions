@@ -27,49 +27,55 @@ public class RabbitQueueCheckHealthIndicator extends AbstractHealthIndicator
 			try
 			{
 				String queueName = queueCheck.getQueue().getName();
-				int currentSize = RabbitQueuePropertiesUtil.getMessageCount(queueCheck.getQueue());
-				int maxSize = queueCheck.getMaxSize();
-				int currentConsumers = RabbitQueuePropertiesUtil.getConsumerCount(queueCheck.getQueue());
-				int minConsumers = queueCheck.getMinConsumers();
+				int currentMessageCount = RabbitQueuePropertiesUtil.getMessageCount(queueCheck.getQueue());
+				int maxMessageCount = queueCheck.getMaxMessageCount();
+				int currentConsumerCount = RabbitQueuePropertiesUtil.getConsumerCount(queueCheck.getQueue());
+				int minConsumerCount = queueCheck.getMinConsumerCount();
 
 				Map<String, Object> details = new LinkedHashMap<String, Object>();
 				details.put("status", Status.UP.getCode());
-				details.put("currentMessageCount", Integer.valueOf(currentSize));
-				details.put("maxMessageCount", Integer.valueOf(maxSize));
-				details.put("currentConsumerCount", Integer.valueOf(currentConsumers));
-				details.put("minConsumerCount", Integer.valueOf(minConsumers));
+				details.put("currentMessageCount", Integer.valueOf(currentMessageCount));
+				details.put("maxMessageCount", Integer.valueOf(maxMessageCount));
+				details.put("currentConsumerCount", Integer.valueOf(currentConsumerCount));
+				details.put("minConsumerCount", Integer.valueOf(minConsumerCount));
 				builder.withDetail(queueName, details);
 
-				if (currentSize > maxSize)
+				if (currentMessageCount > maxMessageCount)
 				{
 					builder.down();
 					details.put("status", Status.DOWN.getCode());
-					log.warn(queueName + ": Too many messages ready (Current: " + currentSize + ", "
-					        + "Max-Messages: " + queueCheck.getMaxSize() + ")");
+					log.warn(queueName + ": Too many messages ready (Current: " + currentMessageCount + ", "
+					        + "Max-Messages: " + queueCheck.getMaxMessageCount() + ")");
 				}
 
-				if (currentConsumers < minConsumers)
+				if (currentConsumerCount < minConsumerCount)
 				{
 					builder.down();
 					details.put("status", Status.DOWN.getCode());
-					log.warn(queueName + ": Not enough consumers active (Current: " + currentConsumers + ", "
-					        + "Min-Consumers: " + queueCheck.getMinConsumers() + ")");
+					log.warn(queueName + ": Not enough consumers active (Current: " + currentConsumerCount + ", "
+					        + "Min-Consumers: " + queueCheck.getMinConsumerCount() + ")");
 				}
 			}
 			catch (Exception e)
 			{
 				log.error(e.getMessage(), e);
+				builder.down();
 			}
 		}
 	}
 
-	public void addQueueCheck(Queue queue, int maxSize)
+	public void addQueueCheck(Queue queue, int maxMessageCount)
 	{
-		queueChecks.add(new QueueCheck(queue, maxSize, 1));
+		queueChecks.add(new QueueCheck(queue, maxMessageCount, 1));
 	}
 
-	public void addQueueCheck(Queue queue, int maxSize, int minConsumers)
+	public void addQueueCheck(Queue queue, int maxMessageCount, int minConsumerCount)
 	{
-		queueChecks.add(new QueueCheck(queue, maxSize, minConsumers));
+		queueChecks.add(new QueueCheck(queue, maxMessageCount, minConsumerCount));
+	}
+	
+	public List<QueueCheck> getQueueChecks()
+	{
+		return queueChecks;
 	}
 }

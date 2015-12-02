@@ -5,7 +5,7 @@
 	<name>spring-actuator-extensions</name>
 	<description>New HealthIndicators for Spring-Boot</description>
 	<url>https://github.com/julian-eggers/spring-actuator-extensions</url>
-	<version>0.2.2-RELEASE</version>
+	<version>0.2.3-RELEASE</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -204,6 +204,18 @@
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-api-easymock</artifactId>
 			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.8.5</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

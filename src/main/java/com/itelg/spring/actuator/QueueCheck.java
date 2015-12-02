@@ -8,14 +8,14 @@ public class QueueCheck
 {
 	private Queue queue;
 	private RabbitAdmin rabbitAdmin;
-	private int maxSize;
-	private int minConsumers;
+	private int maxMessageCount;
+	private int minConsumerCount;
 
-	public QueueCheck(Queue queue, int maxSize, int minConsumers)
+	public QueueCheck(Queue queue, int maxMessageCount, int minConsumerCount)
 	{
 		this.queue = queue;
-		this.maxSize = maxSize;
-		this.minConsumers = minConsumers;
+		this.maxMessageCount = maxMessageCount;
+		this.minConsumerCount = minConsumerCount;
 		validateRabbitAdmin(queue);
 	}
 	
@@ -37,13 +37,13 @@ public class QueueCheck
 		return rabbitAdmin;
 	}
 
-	public int getMaxSize()
+	public int getMaxMessageCount()
 	{
-		return maxSize;
+		return maxMessageCount;
 	}
 
-	public int getMinConsumers()
+	public int getMinConsumerCount()
 	{
-		return minConsumers;
+		return minConsumerCount;
 	}
 }

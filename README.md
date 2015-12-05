@@ -3,6 +3,7 @@ spring-actuator-extensions
 
 [![Build Status](https://travis-ci.org/julian-eggers/spring-actuator-extensions.svg?branch=master)](https://travis-ci.org/julian-eggers/spring-actuator-extensions)
 [![Coverage Status](https://coveralls.io/repos/julian-eggers/spring-actuator-extensions/badge.svg?branch=master&service=github)](https://coveralls.io/github/julian-eggers/spring-actuator-extensions?branch=master)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/3b7175029c144f91aa297355d4223158)](https://www.codacy.com/app/eggers-julian/spring-actuator-extensions)
 
 #### Maven
 ```xml

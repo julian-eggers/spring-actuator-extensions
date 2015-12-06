@@ -33,7 +33,7 @@ public class RabbitQueuePropertiesUtil
 		return ((Integer) consumerCount).intValue();
 	}
 
-	static RabbitAdmin validateRabbitAdmin(Queue queue)
+	private static RabbitAdmin validateRabbitAdmin(Queue queue)
 	{
 		Assert.notEmpty(queue.getDeclaringAdmins(), "At least one RabbitAdmin must be declared");
 		Object object = queue.getDeclaringAdmins().iterator().next();
@@ -41,7 +41,7 @@ public class RabbitQueuePropertiesUtil
 		return (RabbitAdmin) object;
 	}
 
-	static Object getProperty(RabbitAdmin rabbitAdmin, Queue queue, String key)
+	private static Object getProperty(RabbitAdmin rabbitAdmin, Queue queue, String key)
 	{
 		Properties properties = rabbitAdmin.getQueueProperties(queue.getName());
 		Assert.isTrue(properties.containsKey(key));

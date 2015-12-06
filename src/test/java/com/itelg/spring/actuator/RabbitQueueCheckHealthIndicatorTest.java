@@ -20,7 +20,7 @@ import org.springframework.boot.actuate.health.Status;
 public class RabbitQueueCheckHealthIndicatorTest
 {
 	@Test
-	public void testDoHealthCheck_noQueueChecks() throws Exception
+	public void testDoHealthCheckNoQueueChecks() throws Exception
 	{
 		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		
@@ -31,7 +31,7 @@ public class RabbitQueueCheckHealthIndicatorTest
 	
 	@SuppressWarnings({ "unchecked", "boxing" })
 	@Test
-	public void testDoHealthCheck_singleQueueCheckUp() throws Exception
+	public void testDoHealthCheckSingleQueueCheckUp() throws Exception
 	{
 		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		Queue queue = generateQueue("test");
@@ -56,7 +56,7 @@ public class RabbitQueueCheckHealthIndicatorTest
 	
 	@SuppressWarnings({ "unchecked", "boxing" })
 	@Test
-	public void testDoHealthCheck_singleQueueCheck_queueSizeDown() throws Exception
+	public void testDoHealthCheckSingleQueueCheckQueueSizeDown() throws Exception
 	{
 		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		Queue queue = generateQueue("test");
@@ -81,7 +81,7 @@ public class RabbitQueueCheckHealthIndicatorTest
 	
 	@SuppressWarnings({ "unchecked", "boxing" })
 	@Test
-	public void testDoHealthCheck_singleQueueCheck_consumerDown() throws Exception
+	public void testDoHealthCheckSingleQueueCheckConsumerDown() throws Exception
 	{
 		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		Queue queue = generateQueue("test");
@@ -106,7 +106,7 @@ public class RabbitQueueCheckHealthIndicatorTest
 	
 	@SuppressWarnings({ "boxing" })
 	@Test
-	public void testDoHealthCheck_singleQueueCheck_MetricException() throws Exception
+	public void testDoHealthCheckSingleQueueCheckMetricException() throws Exception
 	{
 		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		Queue queue = generateQueue("test");
@@ -125,7 +125,7 @@ public class RabbitQueueCheckHealthIndicatorTest
 	
 	@SuppressWarnings({ "unchecked", "boxing" })
 	@Test
-	public void testDoHealthCheck_multipleQueueChecks_oneUpOneDown() throws Exception
+	public void testDoHealthCheckMultipleQueueChecksOneUpOneDown() throws Exception
 	{
 		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		Queue queue1 = generateQueue("test1");
@@ -163,7 +163,7 @@ public class RabbitQueueCheckHealthIndicatorTest
 	}
 	
 	@Test
-	public void testAddQueueCheck_maxMessageCountAndMinConsumerCount()
+	public void testAddQueueCheckMaxMessageCountAndMinConsumerCount()
 	{
 		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		healthIndicator.addQueueCheck(generateQueue("test"), 10000, 5);
@@ -172,7 +172,7 @@ public class RabbitQueueCheckHealthIndicatorTest
 	}
 	
 	@Test
-	public void testAddQueueCheck_maxMessageCount()
+	public void testAddQueueCheckMaxMessageCount()
 	{
 		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		healthIndicator.addQueueCheck(generateQueue("test"), 10000);

@@ -3,11 +3,13 @@ package com.itelg.spring.actuator;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.api.easymock.annotation.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -16,14 +18,23 @@ import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.boot.actuate.health.Status;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest( RabbitQueuePropertiesUtil.class )
 public class RabbitQueueCheckHealthIndicatorTest
 {
+	private RabbitQueueCheckHealthIndicator healthIndicator;
+	
+	@Mock
+	private RabbitQueuePropertiesManager propertiesManager;
+	
+	@Before
+	public void before()
+	{
+		healthIndicator = new RabbitQueueCheckHealthIndicator();
+		Whitebox.setInternalState(healthIndicator, propertiesManager);
+	}
+	
 	@Test
 	public void testDoHealthCheckNoQueueChecks() throws Exception
 	{
-		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
-		
 		Builder builder = new Builder(Status.OUT_OF_SERVICE);
 		healthIndicator.doHealthCheck(builder);
 		Assert.assertEquals(Status.UP, builder.build().getStatus());
@@ -33,16 +44,20 @@ public class RabbitQueueCheckHealthIndicatorTest
 	@Test
 	public void testDoHealthCheckSingleQueueCheckUp() throws Exception
 	{
-		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		Queue queue = generateQueue("test");
 		healthIndicator.addQueueCheck(queue, 10000, 2);
 		
-		PowerMockito.mockStatic(RabbitQueuePropertiesUtil.class);
-		PowerMockito.when(RabbitQueuePropertiesUtil.getMessageCount(queue)).thenReturn(Integer.valueOf(5883));
-		PowerMockito.when(RabbitQueuePropertiesUtil.getConsumerCount(queue)).thenReturn(Integer.valueOf(4));
+		RabbitQueueProperties properties = new RabbitQueueProperties();
+		properties.setConsumerCount(4);
+		properties.setMessageCount(5883);
+		propertiesManager.request(queue);
+		PowerMock.expectLastCall().andReturn(properties);
 		
+		PowerMock.replayAll();
 		Builder builder = new Builder(Status.OUT_OF_SERVICE);
 		healthIndicator.doHealthCheck(builder);
+		PowerMock.verifyAll();
+		
 		Health health = builder.build();
 		Assert.assertEquals(Status.UP, health.getStatus());
 		Assert.assertNotNull(health.getDetails().get("test"));
@@ -58,16 +73,20 @@ public class RabbitQueueCheckHealthIndicatorTest
 	@Test
 	public void testDoHealthCheckSingleQueueCheckQueueSizeDown() throws Exception
 	{
-		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		Queue queue = generateQueue("test");
 		healthIndicator.addQueueCheck(queue, 10000, 2);
 		
-		PowerMockito.mockStatic(RabbitQueuePropertiesUtil.class);
-		PowerMockito.when(RabbitQueuePropertiesUtil.getMessageCount(queue)).thenReturn(Integer.valueOf(15883));
-		PowerMockito.when(RabbitQueuePropertiesUtil.getConsumerCount(queue)).thenReturn(Integer.valueOf(4));
+		RabbitQueueProperties properties = new RabbitQueueProperties();
+		properties.setConsumerCount(4);
+		properties.setMessageCount(15883);
+		propertiesManager.request(queue);
+		PowerMock.expectLastCall().andReturn(properties);
 		
+		PowerMock.replayAll();
 		Builder builder = new Builder(Status.OUT_OF_SERVICE);
 		healthIndicator.doHealthCheck(builder);
+		PowerMock.verifyAll();
+		
 		Health health = builder.build();
 		Assert.assertEquals(Status.DOWN, health.getStatus());
 		Assert.assertNotNull(health.getDetails().get("test"));
@@ -83,16 +102,20 @@ public class RabbitQueueCheckHealthIndicatorTest
 	@Test
 	public void testDoHealthCheckSingleQueueCheckConsumerDown() throws Exception
 	{
-		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		Queue queue = generateQueue("test");
 		healthIndicator.addQueueCheck(queue, 10000, 2);
 		
-		PowerMockito.mockStatic(RabbitQueuePropertiesUtil.class);
-		PowerMockito.when(RabbitQueuePropertiesUtil.getMessageCount(queue)).thenReturn(Integer.valueOf(5883));
-		PowerMockito.when(RabbitQueuePropertiesUtil.getConsumerCount(queue)).thenReturn(Integer.valueOf(1));
+		RabbitQueueProperties properties = new RabbitQueueProperties();
+		properties.setConsumerCount(1);
+		properties.setMessageCount(5883);
+		propertiesManager.request(queue);
+		PowerMock.expectLastCall().andReturn(properties);
 		
+		PowerMock.replayAll();
 		Builder builder = new Builder(Status.OUT_OF_SERVICE);
 		healthIndicator.doHealthCheck(builder);
+		PowerMock.verifyAll();
+		
 		Health health = builder.build();
 		Assert.assertEquals(Status.DOWN, health.getStatus());
 		Assert.assertNotNull(health.getDetails().get("test"));
@@ -104,20 +127,20 @@ public class RabbitQueueCheckHealthIndicatorTest
 		Assert.assertEquals(2, details.get("minConsumerCount"));
 	}
 	
-	@SuppressWarnings({ "boxing" })
 	@Test
 	public void testDoHealthCheckSingleQueueCheckMetricException() throws Exception
 	{
-		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		Queue queue = generateQueue("test");
 		healthIndicator.addQueueCheck(queue, 10000, 2);
 		
-		PowerMockito.mockStatic(RabbitQueuePropertiesUtil.class);
-		PowerMockito.when(RabbitQueuePropertiesUtil.getMessageCount(queue)).thenReturn(Integer.valueOf(5883));
-		PowerMockito.when(RabbitQueuePropertiesUtil.getConsumerCount(queue)).thenThrow(new RuntimeException());
+		propertiesManager.request(queue);
+		PowerMock.expectLastCall().andThrow(new RuntimeException());
 		
+		PowerMock.replayAll();
 		Builder builder = new Builder(Status.OUT_OF_SERVICE);
 		healthIndicator.doHealthCheck(builder);
+		PowerMock.verifyAll();
+		
 		Health health = builder.build();
 		Assert.assertEquals(Status.DOWN, health.getStatus());
 		Assert.assertNull(health.getDetails().get("test"));
@@ -127,20 +150,28 @@ public class RabbitQueueCheckHealthIndicatorTest
 	@Test
 	public void testDoHealthCheckMultipleQueueChecksOneUpOneDown() throws Exception
 	{
-		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		Queue queue1 = generateQueue("test1");
 		healthIndicator.addQueueCheck(queue1, 10000, 2);
 		Queue queue2 = generateQueue("test2");
 		healthIndicator.addQueueCheck(queue2, 40000, 5);
 		
-		PowerMockito.mockStatic(RabbitQueuePropertiesUtil.class);
-		PowerMockito.when(RabbitQueuePropertiesUtil.getMessageCount(queue1)).thenReturn(Integer.valueOf(15883));
-		PowerMockito.when(RabbitQueuePropertiesUtil.getConsumerCount(queue1)).thenReturn(Integer.valueOf(1));
-		PowerMockito.when(RabbitQueuePropertiesUtil.getMessageCount(queue2)).thenReturn(Integer.valueOf(5883));
-		PowerMockito.when(RabbitQueuePropertiesUtil.getConsumerCount(queue2)).thenReturn(Integer.valueOf(10));
+		RabbitQueueProperties properties1 = new RabbitQueueProperties();
+		properties1.setConsumerCount(1);
+		properties1.setMessageCount(15883);
+		propertiesManager.request(queue1);
+		PowerMock.expectLastCall().andReturn(properties1);
 		
+		RabbitQueueProperties properties2 = new RabbitQueueProperties();
+		properties2.setConsumerCount(10);
+		properties2.setMessageCount(5883);
+		propertiesManager.request(queue2);
+		PowerMock.expectLastCall().andReturn(properties2);
+		
+		PowerMock.replayAll();
 		Builder builder = new Builder(Status.OUT_OF_SERVICE);
 		healthIndicator.doHealthCheck(builder);
+		PowerMock.verifyAll();
+		
 		Health health = builder.build();
 		Assert.assertEquals(Status.DOWN, health.getStatus());
 		Assert.assertEquals(2, health.getDetails().size());
@@ -165,7 +196,6 @@ public class RabbitQueueCheckHealthIndicatorTest
 	@Test
 	public void testAddQueueCheckMaxMessageCountAndMinConsumerCount()
 	{
-		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		healthIndicator.addQueueCheck(generateQueue("test"), 10000, 5);
 		healthIndicator.addQueueCheck(generateQueue("test"), 5000, 2);
 		Assert.assertEquals(2, healthIndicator.getQueueChecks().size());
@@ -174,7 +204,6 @@ public class RabbitQueueCheckHealthIndicatorTest
 	@Test
 	public void testAddQueueCheckMaxMessageCount()
 	{
-		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		healthIndicator.addQueueCheck(generateQueue("test"), 10000);
 		healthIndicator.addQueueCheck(generateQueue("test"), 5000);
 		Assert.assertEquals(2, healthIndicator.getQueueChecks().size());
@@ -183,7 +212,6 @@ public class RabbitQueueCheckHealthIndicatorTest
 	@Test
 	public void testGetQueueChecks()
 	{
-		RabbitQueueCheckHealthIndicator healthIndicator = new RabbitQueueCheckHealthIndicator();
 		Assert.assertNotNull(healthIndicator.getQueueChecks());
 		
 		Queue queue = generateQueue("test");

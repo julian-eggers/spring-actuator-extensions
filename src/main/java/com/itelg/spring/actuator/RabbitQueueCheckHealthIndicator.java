@@ -16,6 +16,7 @@ public class RabbitQueueCheckHealthIndicator extends AbstractHealthIndicator
 {
 	private static final Logger log = LoggerFactory.getLogger(RabbitQueueCheckHealthIndicator.class);
 	private List<QueueCheck> queueChecks = new ArrayList<QueueCheck>();
+	private RabbitQueuePropertiesManager propertiesManager = new RabbitQueuePropertiesManager();
 
 	@Override
 	protected void doHealthCheck(Builder builder) throws Exception
@@ -26,10 +27,11 @@ public class RabbitQueueCheckHealthIndicator extends AbstractHealthIndicator
 		{
 			try
 			{
+				RabbitQueueProperties queueProperties = propertiesManager.request(queueCheck.getQueue());
 				String queueName = queueCheck.getQueue().getName();
-				int currentMessageCount = RabbitQueuePropertiesUtil.getMessageCount(queueCheck.getQueue());
+				int currentMessageCount = queueProperties.getMessageCount();
 				int maxMessageCount = queueCheck.getMaxMessageCount();
-				int currentConsumerCount = RabbitQueuePropertiesUtil.getConsumerCount(queueCheck.getQueue());
+				int currentConsumerCount = queueProperties.getConsumerCount();
 				int minConsumerCount = queueCheck.getMinConsumerCount();
 
 				Map<String, Object> details = new LinkedHashMap<String, Object>();
